@@ -1,6 +1,8 @@
 CIA-IDE - ATA IDE interface for C64/128
 ===================================
 
+28.6.2016 - Plan to support IDE64 V4.x
+
 Maciej Witkowiak
 YTM/Elysium
 ytm@elysium.pl
