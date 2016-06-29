@@ -2,10 +2,13 @@
 ; This is the only configuration file
 ; you should edit only this one
 
-!set machine		= 128			; 64 for C64, 128 for C128
+!set machine		= 64			; 64 for C64, 128 for C128
 
 ; Kind of IDE interface. 0 - IDE64, !=0 - CIA#3 @ $d300
-!set useIDE64	= 1
+!set useIDE64	= 0
+
+; IDE64 direct data. 0 - IDE64 prior V4.x, 1 - IDE64 V4.x
+!set IDE64_V4 = 1
 
 ; If using CIA-style interface: 0 - faster, 1 - slower but sure, use
 ;                              if you experienced data corruption - this may help

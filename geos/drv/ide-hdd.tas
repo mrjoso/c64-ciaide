@@ -757,7 +757,7 @@ WriteIDERegister			; X - regnumber, A - value
 		ORA #$20
 		STA .wrreg+1
 		PLA
-		STA IDE64_IDEDataL
+		!if (IDE64_V4=0) {STA IDE64_IDEDataL}
 .wrreg		STA IDE64_IDEBase
 		RTS
 	} else {
@@ -806,7 +806,7 @@ ReadIDERegister				; X - regnumber, A,X - value
 		ORA #$20
 		STA .rdreg+1
 .rdreg	    	LDA IDE64_IDEBase
-		LDA IDE64_IDEDataL
+		!if (IDE64_V4=0) {LDA IDE64_IDEDataL}
 		TAX
 		RTS
 	} else {

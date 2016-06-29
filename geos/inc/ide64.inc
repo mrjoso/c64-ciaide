@@ -13,9 +13,13 @@ IDE_SETSPINDOWNNOW	= $e2
 IDE_SETSPINDOWN	= $e3
 IDE_IDENTIFY	= $ec
 
-;IDE register numbers
+;IDE register numbers - prior IDE64 V4.x
 ;	read: ldx IDE_Data: lda IDE64_IDEBase,x: lda IDE64_IDEDataL
 ;	write:ldx IDE_Data: sta IDE64_IDEDataL: sta IDE64_IDEBase,x
+
+;IDE register numbers - IDE64 V4.x
+;	read: ldx IDE_Data: lda IDE64_IDEBase,x
+;	write:ldx IDE_Data: sta IDE64_IDEBase,x
 
 IDE_Data	= 0
 IDE_Error	= 1
@@ -31,3 +35,6 @@ IDE_Control	= 14
 IDE64_IDEBase	= $de20
 IDE64_IDEDataL	= $de30
 IDE64_IDEDataH	= $de31
+
+IDE64_cfg_open = $defe
+IDE64_cfg_stnd = $deff

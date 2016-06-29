@@ -32,19 +32,19 @@ SwapperStart
 		LDY #0
 		STY $80
 		STY $82
-		STY $DEFF		; switch to STND config
+		STY IDE64_cfg_stnd		; switch to STND config
 		LDA #>DISK_BASE
 		STA $81
 		LDA #>IDE64_SWAPRAM_BASE
 		STA $83
 Swp_Loop	LDA ($80),Y
 		TAX
-		STA $DEFE		; switch to OPEN - RAM in $1000-$7FFF
+		STA IDE64_cfg_open		; switch to OPEN - RAM in $1000-$7FFF
 		LDA ($82),Y
 		PHA
 		TXA
 		STA ($82),Y
-		STA $DEFF		; switch to STND config
+		STA IDE64_cfg_stnd		; switch to STND config
 		PLA
 		STA ($80),y
 		INY

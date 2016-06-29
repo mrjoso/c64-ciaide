@@ -13,6 +13,7 @@
 ;23.07.02 - even bigger partitions (16MB)
 ;24.07.02 - IDE64 8-bit support, C64 support (haven't I ever test it???)
 ;25.07.02 - full IDE64 8-bit support, C64 support fixed
+;29.06.16 - IDE64 V4.x support
 
 ;LOOKOUT: non-settable constants in driver, search for <---,!!!
 ;LOOKOUT: MASTERSLAVE unimplemented, always set to MASTER
@@ -905,10 +906,10 @@ ReadAutoConfig	JSR SetMBRParams
 	    }
 		LDY #0
 .readdata	LDA IDE64_IDEBase
+		!if (IDE64_V4=0) {LDA IDE64_IDEDataL}
+		STA diskBlkBuf,y
 		LDA IDE64_IDEDataH
 		STA dir2Head,y
-		LDA IDE64_IDEDataL
-		STA diskBlkBuf,y
 		INY
 		BNE .readdata
 	    !if (machine=64) {
@@ -1104,7 +1105,7 @@ WriteIDERegister			; X - regnumber, A - value
 		ORA #$20
 		STA .wrreg+1
 		PLA
-		STA IDE64_IDEDataL
+		!if (IDE64_V4=0) {STA IDE64_IDEDataL}
 .wrreg		STA IDE64_IDEBase
 	} else {
 	    !if (extraCareful=0) {
@@ -1157,7 +1158,7 @@ ReadIDERegister				; X - regnumber, A,X - value
 		ORA #$20
 		STA .rdreg+1
 .rdreg	    	LDA IDE64_IDEBase
-		LDA IDE64_IDEDataL
+		!if (IDE64_V4=0) {LDA IDE64_IDEDataL}
 		TAX
 	} else {
 	    !if (extraCareful=0) {
@@ -1620,7 +1621,7 @@ ClearIDE64RAM	PHP			; IDE64 memory cleaner, must be <256 long, relocatable
 		SEI
 		+PushB CPU_DATA
 		+LoadB CPU_DATA, IO_IN
-		STA $DEFE		; switch to OPEN - RAM in $1000-$7FFF
+		STA IDE64_cfg_open		; switch to OPEN - RAM in $1000-$7FFF
 		LDA #$10
 		STA $81
 		LDA #0
@@ -1633,7 +1634,7 @@ ClearIDE64RAM	PHP			; IDE64 memory cleaner, must be <256 long, relocatable
 		LDX $81
 		CPX #$80
 		BNE .clrid64loop
-		STA $DEFF		; switch to STND config
+		STA IDE64_cfg_stnd		; switch to STND config
 		+PopB CPU_DATA
 		PLP
 		RTS
