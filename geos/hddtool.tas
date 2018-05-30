@@ -669,14 +669,20 @@ DoHDDSetup	JSR DoPreviousMenu
 		+MoveB r0H, cylinders+1
 
 .maxpartget	; count maxpartition based on provided data
-		JSR CountMaxPartition
-		+MoveW r0, maxpartition
-		+LoadW a1, numpartshex		; show info about # of available partitions
+		JSR CountMaxPartition     ; (cylinders*sectors*heads/partitionsize)  Output: r0,r1
+		+MoveW r0, maxpartition   ; store the maxpartition
+		+LoadW a1, numpartshex    ; pointer, where to put the ascii partiton number
 		SEC
-		JSR ConvertToDec
+		JSR ConvertToDec          ; Input: r0, Output: *(a1)
 		+LoadW a0, numpart1
 		+LoadW a1, numpart2
-		JSR DoErrorBox
+		JSR DoErrorBox            ; show info about # of available partitions
+    
+		+CmpWI maxpartition,$0000 ; FIX#2 ==$0000 - no partition available
+		BNE .partaval
+		RTS                       ; exit, some menu remains inactive
+ .partaval
+    
 		+SubVW 1, maxpartition		; so maxpartition==lastpartition
 
 		JSR DoSetDefPartExe		; get default partition number
