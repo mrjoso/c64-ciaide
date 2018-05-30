@@ -86,7 +86,7 @@ partitionsize	!word HDD_PARTITIONSIZE_L,HDD_PARTITIONSIZE_H	; size of a partitio
 firstpartoffs	!word HDD_OFFS_1STPART_L, HDD_OFFS_1STPART_H	; offset to first partition
 ; end of identical
 spc		!word 0		; sectors per cylinder
-numspace	!byte 0,0,0,0,0	; temporary for decimal input
+numspace	!byte 0,0,0,0,0,0	; temporary for decimal input - five digits, zero terminated
 namespace	!byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0	; temporary for disk name
     !if (machine=64) {
 tmpCPU_DATA	= $87 ;!byte 0		; restore to CPU_DATA upon exit
@@ -260,11 +260,12 @@ hddinfoallpart	!text "00000 partitions, "
 hddinfodefpart	!text "00000 default.",0
 
 	!if (useIDE64=0) {
-about1	    	!text BOLDON, "HDDTool for IDE64 interface", 0
+    !if (IDE64_V4=0) {about1  !text BOLDON, "HDDTool for IDE64 interface", 0}
+      else {about1  !text BOLDON, "HDDTool for IDE64 V4.x interface", 0}
 	} else {
 about1		!text BOLDON, "HDDTool and IDE interface", 0
 	}
-about2		!text "by Maciej Witkowiak, VII 2002", 0
+about2		!text "by Maciej Witkowiak, build 2018-05-31", 0
 
 spindown1	!text BOLDON, "Number of 5s. units to poweroff:", 0
 
@@ -439,23 +440,29 @@ UpdateMenusOpts
 ; returns word in r0 and C=0 or C=1 for CANCEL, for error - repeats query
 DoDecDlg
 		+LoadW a1, numspace
-		LDY #0
-		TYA
-		STA (a1),y
+                        ; FIX#1
+    LDY #5              ; clear numspace buffer - "OK" button does not null-terminate the string
+    LDA #0
+.clrbf    STA (a1),y
+    DEY
+    BPL .clrbf
+
 		+LoadW r0, enterdecDlgBox
 		JSR DoDlgBox
 		+CmpBI sysDBData, CANCEL
 		BEQ DoDDlgEndC
+    
 		+LoadW r0, 0
 		; now find end of string
 		LDY #0
 		LDX #0
 		LDA (a1),y
 		BNE .cont
-		JMP DoDDlgEndC
+		JMP DoDDlgEndC    ;-> Empty string entered
 .cont		INY
 		LDA (a1),y
-		BNE .cont
+		BNE .cont         ;loop till zero terminator detected (end of string)
+
 		DEY
 .loop		LDA dectabL,x
 		STA r1L
