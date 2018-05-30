@@ -440,12 +440,12 @@ UpdateMenusOpts
 ; returns word in r0 and C=0 or C=1 for CANCEL, for error - repeats query
 DoDecDlg
 		+LoadW a1, numspace
-                        ; FIX#1
-    LDY #5              ; clear numspace buffer - "OK" button does not null-terminate the string
-    LDA #0
-.clrbf    STA (a1),y
-    DEY
-    BPL .clrbf
+; FIX#1
+		LDY #5		; clear numspace buffer - "OK" button does not null-terminate the string
+		LDA #0
+.clrbf		STA (a1),y
+		DEY
+		BPL .clrbf
 
 		+LoadW r0, enterdecDlgBox
 		JSR DoDlgBox
