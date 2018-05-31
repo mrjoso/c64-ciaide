@@ -260,8 +260,8 @@ hddinfoallpart	!text "00000 partitions, "
 hddinfodefpart	!text "00000 default.",0
 
 	!if (useIDE64=0) {
-    !if (IDE64_V4=0) {about1  !text BOLDON, "HDDTool for IDE64 interface", 0}
-      else {about1  !text BOLDON, "HDDTool for IDE64 V4.x interface", 0}
+		!if (IDE64_V4=0) {about1  !text BOLDON, "HDDTool for IDE64 interface", 0
+  } else {about1  !text BOLDON, "HDDTool for IDE64 V4.x interface", 0}
 	} else {
 about1		!text BOLDON, "HDDTool and IDE interface", 0
 	}
